@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mon Site Polyvalent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --main-color: #4a90e2;
+      --bg-color: #f5f9ff;
+      --text-color: #333;
+      --card-bg: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--main-color);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    nav {
+      background: white;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding: 1rem;
+      box-shadow: 0 2px 5px var(--shadow);
+    }
+
+    nav a {
+      color: var(--main-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #2c6fcd;
+    }
+
+    section {
+      padding: 2rem 1rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      color: var(--main-color);
+    }
+
+    input, textarea, select, button {
+      padding: 0.6rem;
+      margin: 0.5rem 0;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      background: var(--main-color);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2c6fcd;
+    }
+
+    .product {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.5rem 0;
+    }
+
+    .cart {
+      margin-top: 1rem;
+    }
+
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    a.download-link {
+      color: var(--main-color);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Mon Site Polyvalent</h1>
+    <p>Commerce - Factures - CV - Articles - Poésie</p>
+  </header>
+
+  <nav>
+    <a href="#commerce">Commerce</a>
+    <a href="#facture">Facture</a>
+    <a href="#cv">CV</a>
+    <a href="#articles">Articles</a>
+    <a href="#poesie">Poésie</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section id="commerce" class="card">
+    <h2>Boutique</h2>
+    <div class="product">
+      <span>Produit A - 10€</span>
+      <button onclick="addToCart('Produit A', 10)">Ajouter</button>
+    </div>
+    <div class="product">
+      <span>Produit B - 15€</span>
+      <button onclick="addToCart('Produit B', 15)">Ajouter</button>
+    </div>
+    <div class="cart">
+      <h3>Panier :</h3>
+      <ul id="cart-list"></ul>
+      <strong>Total : <span id="cart-total">0</span> €</strong>
+    </div>
+  </section>
+
+  <section id="facture" class="card">
+    <h2>Générateur de Facture</h2>
+    <form onsubmit="generateInvoice(event)">
+      <input type="text" id="client" placeholder="Nom du client" required />
+      <input type="number" id="montant" placeholder="Montant (€)" required />
+      <button type="submit">Générer</button>
+    </form>
+    <div id="invoice-result"></div>
+  </section>
+
+  <section id="cv" class="card">
+    <h2>Mon CV</h2>
+    <p><strong>Nom :</strong> Jean Dupont</p>
+    <p><strong>Compétences :</strong> Développement Web, Rédaction, Design</p>
+    <p><strong>Expérience :</strong> 5 ans dans le digital</p>
+    <a class="download-link" href="cv-jean-dupont.pdf" download>Télécharger le CV (PDF)</a>
+  </section>
+
+  <section id="articles" class="card">
+    <h2>Articles</h2>
+    <p>Bienvenue dans la section articles : tech, créativité, réflexions personnelles.</p>
+  </section>
+
+  <section id="poesie" class="card">
+    <h2>Poésie</h2>
+    <p><em>“L’ombre d’un mot éclaire l’âme.”</em></p>
+    <p>Poèmes en prose et vers à venir.</p>
+  </section>
+
+  <section id="contact" class="card">
+    <h2>Contact</h2>
+    <form onsubmit="sendMessage(event)">
+      <input type="text" placeholder="Nom" required />
+      <input type="email" placeholder="Email" required />
+      <textarea rows="4" placeholder="Votre message..." required></textarea>
+      <button type="submit">Envoyer</button>
+    </form>
+  </section>
+
+  <footer>
+    &copy; 2025 - Mon Site Polyvalent | Tous droits réservés
+  </footer>
+
+  <script>
+    let cart = [];
+
+    function addToCart(item, price) {
+      cart.push({ item, price });
+      updateCart();
+    }
+
+    function updateCart() {
+      const list = document.getElementById('cart-list');
+      const total = document.getElementById('cart-total');
+      list.innerHTML = '';
+      let sum = 0;
+      cart.forEach((prod) => {
+        const li = document.createElement('li');
+        li.textContent = `${prod.item} - ${prod.price} €`;
+        list.appendChild(li);
+        sum += prod.price;
+      });
+      total.textContent = sum;
+    }
+
+    function generateInvoice(event) {
+      event.preventDefault();
+      const client = document.getElementById('client').value;
+      const montant = document.getElementById('montant').value;
+      const result = document.getElementById('invoice-result');
+      result.innerHTML = `<p><strong>Facture pour :</strong> ${client}</p><p><strong>Montant :</strong> ${montant} €</p>`;
+    }
+
+    function sendMessage(event) {
+      event.preventDefault();
+      alert("Message envoyé ! Merci de nous avoir contacté.");
+    }
+  </script>
+
+</body>
+</html>
